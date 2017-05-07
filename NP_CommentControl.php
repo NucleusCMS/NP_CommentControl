@@ -124,7 +124,7 @@ class NP_CommentControl extends NucleusPlugin {
       $query .= ' cip varchar(15) NOT NULL default \'\',';
       $query .= ' cblog int(11) NOT NULL default \'0\',';
       $query .= ' PRIMARY KEY  (id)';
-      $query .= ') TYPE=MyISAM;';
+      $query .= ') ENGINE=MyISAM;';
       sql_query($query);
 
       // options for RSS

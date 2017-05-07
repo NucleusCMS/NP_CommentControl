@@ -94,15 +94,7 @@ class NP_CommentControl extends NucleusPlugin {
    function getVersion()    { return '0.7'; }
    function getDescription() { return _PLUGIN_DESC; }
 
-   function supportsFeature($what) {
-      switch($what)
-      {
-         case 'SqlTablePrefix':
-            return 1;
-         default:
-            return 0;
-      }
-   }
+   function supportsFeature($what) {return in_array($what,array('SqlTablePrefix','SqlApi'));}
 
    function install() {
       $this->createOption('quickmenu', _OPT_SHOW_IN_QMENU, 'yesno', 'yes');
@@ -280,7 +272,7 @@ class NP_CommentControl extends NucleusPlugin {
       $id=strval(intval($item->itemid));
       if (!($member->isLoggedIn() && $member->canAlterItem($id))) return;
       $query = sql_query('SELECT count(*) as total FROM '.$this->table_pending.' WHERE citem='.$id);
-      $row=mysql_fetch_object($query);
+      $row=sql_fetch_object($query);
       if ($row->total>0) echo _NEW_COMM_PENDING;
    }
 
@@ -313,10 +305,10 @@ class NP_CommentControl extends NucleusPlugin {
          }
          $res = sql_query($query);
 
-         if (mysql_num_rows($res) == 0)
+         if (sql_num_rows($res) == 0)
             echo _NO_COMM_PENDING;
          else
-            echo "<a href=\"" . $blog->getURL() . "/nucleus/plugins/commentcontrol/\">" . mysql_num_rows($res) . " " . _COMMENT_PENDING . "</a><br />";
+            echo "<a href=\"" . $blog->getURL() . "/nucleus/plugins/commentcontrol/\">" . sql_num_rows($res) . " " . _COMMENT_PENDING . "</a><br />";
          return;
       }
 
@@ -332,7 +324,7 @@ class NP_CommentControl extends NucleusPlugin {
          }
          $res = sql_query($query);
          $first=true;
-         while ($o = mysql_fetch_object($res))
+         while ($o = sql_fetch_object($res))
          {
             if ($first){
                echo _WARNING_COMM_AWAIT;
@@ -414,7 +406,7 @@ class NP_CommentControl extends NucleusPlugin {
       global $CONF;
       if ($comment->member > 0) {
          $result = sql_query("SELECT mname AS nick, murl AS link FROM ".sql_table('member')." WHERE mnumber = ".$comment->member);
-         $member = mysql_fetch_object($result);
+         $member = sql_fetch_object($result);
          $authorlink = $member->nick;
          $author = "Comment made by: " .$member->nick;
          $title=$comment->title;
@@ -453,7 +445,7 @@ class NP_CommentControl extends NucleusPlugin {
       if ($actionType == 'rss'){
          $this->putHeader();
          $result = sql_query('select c.id as commentid, UNIX_TIMESTAMP(c.ctime) as ct, c.cbody as body, c.cuser as user, c.cmember as member, i.ititle as title, i.inumber as item from '.$this->table_pending .' c, '.sql_table('item').' i where i.inumber=c.citem');
-         while ($row = mysql_fetch_object($result)) $this->putComment($row);
+         while ($row = sql_fetch_object($result)) $this->putComment($row);
          $this->putEnd();
       }
 
@@ -463,7 +455,7 @@ class NP_CommentControl extends NucleusPlugin {
       $query = 'SELECT * FROM ' .$this->table_pending. ' WHERE id=' . intval($id);
       $res = sql_query($query);
       $itemid = -1;
-      while ($o = mysql_fetch_object($res))
+      while ($o = sql_fetch_object($res))
       {
          $name      = addslashes($o->cuser);
          $itemid      = intval($o->citem);
@@ -480,7 +472,7 @@ class NP_CommentControl extends NucleusPlugin {
       if (!$member->isAdmin()) {
          $query = 'SELECT * FROM ' . sql_table('item') . ' WHERE inumber=' . $itemid . ' AND iauthor=' . $member->getID(); 
          $res = sql_query($query);
-         if (mysql_num_rows($res) == 0) {
+         if (sql_num_rows($res) == 0) {
             return _NO_PERMISSION;
          }
       }
@@ -501,7 +493,7 @@ class NP_CommentControl extends NucleusPlugin {
          // need to trigger PostAddComment here....
          $query = 'SELECT * FROM ' . sql_table('comment') . ' WHERE ctime=\'' . $timestamp .  '\'';
          $res= sql_query($query);
-         $commentid = mysql_fetch_object($res);
+         $commentid = sql_fetch_object($res);
          $commentid = $commentid->cnumber;
 
          $comment = array(
@@ -581,7 +573,7 @@ class NP_CommentControl extends NucleusPlugin {
 
       $query = 'SELECT id, ititle, citem, cbody, cuser, cmail, cmember, UNIX_TIMESTAMP(ctime) as timestamp, chost, cip FROM ' . $this->table_pending . ', ' . sql_table('item') . ' WHERE inumber=citem';
       $res = sql_query($query);
-      while ($o = mysql_fetch_object($res))
+      while ($o = sql_fetch_object($res))
       {
          array_push($aResult, array(
                   'itemtitle'    => $o->ititle,

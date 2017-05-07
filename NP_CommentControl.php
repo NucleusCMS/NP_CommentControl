@@ -342,9 +342,9 @@ class NP_CommentControl extends NucleusPlugin {
             $urlallow = $CONF['ActionURL'] . '?action=plugin&name=CommentControl&type=allow&id=' . intval($o->id);
             $urldeny = $CONF['ActionURL'] . '?action=plugin&name=CommentControl&type=deny&id=' . intval($o->id);
             echo '<li>';
-            echo '<a href="'.htmlspecialchars($urlallow).'">'._ALLOW.'</a>';
-            echo '<a href="'.htmlspecialchars($urldeny).'">'._DENY.'</a>';
-            echo ' <strong>',htmlspecialchars($o->cuser),'</strong>';
+            echo '<a href="'.htmlspecialchars($urlallow, ENT_QUOTES, _CHARSET).'">'._ALLOW.'</a>';
+            echo '<a href="'.htmlspecialchars($urldeny, ENT_QUOTES, _CHARSET).'">'._DENY.'</a>';
+            echo ' <strong>',htmlspecialchars($o->cuser, ENT_QUOTES, _CHARSET),'</strong>';
             echo ' ', $o->cbody;
             echo '</li>';
          }

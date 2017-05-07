@@ -493,7 +493,8 @@ class NP_CommentControl extends NucleusPlugin {
                );
 
          global $manager;
-         $manager->notify('PostAddComment',array('comment' => &$comment, 'commentid' => &$commentid));
+         $params = array('comment' => &$comment, 'commentid' => &$commentid);
+         $manager->notify('PostAddComment',$params);
 
          // ItemURL seem to be seted in the event, that breaks re-direction
          $CONF['ItemURL'] = '';

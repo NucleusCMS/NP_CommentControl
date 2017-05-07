@@ -65,23 +65,6 @@
  *
  */
 
-// Fix compatibility older PHP versions
-if (!function_exists('file_get_contents')) {
-  function file_get_contents($filename, $use_include_path = 0) {
-   $data = '';
-   $file = @fopen($filename, "rb", $use_include_path);
-   //set_socket_timeout($file,0);
-   if ($file) {
-     while (!feof($file)) $data .= fread($file, 1024);
-     fclose($file);
-   } else {
-     echo $this->getOption('time_outtext');
-     exit;
-   }
-   return $data;
-  }
-}
-
 class NP_CommentControl extends NucleusPlugin {
 
    function NP_CommentControl() {
@@ -90,8 +73,8 @@ class NP_CommentControl extends NucleusPlugin {
 
    function getName()    { return 'CommentControl'; }
    function getAuthor()     { return 'karma, mod by Radek Hulaan, Edmond Hui (admun), Red Dalek'; }
-   function getURL()     { return 'http://demuynck.org/'; }
-   function getVersion()    { return '0.7'; }
+   function getURL()     { return 'https://github.com/NucleusCMS/NP_CommentControl'; }
+   function getVersion()    { return '0.8'; }
    function getDescription() { return _PLUGIN_DESC; }
 
    function supportsFeature($what) {return in_array($what,array('SqlTablePrefix','SqlApi'));}
@@ -592,4 +575,3 @@ class NP_CommentControl extends NucleusPlugin {
       return $aResult;
    }
 }
-?>
